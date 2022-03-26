@@ -21,7 +21,7 @@ section_alignment = pe.OPTIONAL_HEADER.SectionAlignment if pe.OPTIONAL_HEADER.Se
 expected_next_va = None
 for section in pe.sections:
     if expected_next_va is not None and section.VirtualAddress != expected_next_va:
-        print("Non-contiguous section %s, virtual address = 0x%08X, size = 0x%08X, expected virtual address = 0x%08X" % (section.Name, section.VirtualAddress, section.Misc_VirtualSize, expected_next_va))
+        print("Non-contiguous section %s, virtual address = 0x%08X, size = 0x%08X, expected virtual address = 0x%08X" % (section.Name.decode('ascii'), section.VirtualAddress, section.Misc_VirtualSize, expected_next_va))
     expected_next_va = align(section.VirtualAddress + section.Misc_VirtualSize, section_alignment)
 
 
@@ -29,6 +29,6 @@ if pe.has_relocs():
     last_va = 0
     for base_reloc in pe.DIRECTORY_ENTRY_BASERELOC:
         if base_reloc.struct.VirtualAddress < last_va:
-            print("Out of order IMAGE_BASE_RELOCATION found, %08X < %08X" % (base_reloc.struct.VirtualAddress, last_va))
+            print("Out of order IMAGE_BASE_RELOCATION found, 0x%08X < 0x%08X" % (base_reloc.struct.VirtualAddress, last_va))
         last_va = base_reloc.struct.VirtualAddress
 
