@@ -2,8 +2,7 @@ import pefile
 import sys
 
 def align(x, a):
-    r = x % a or a
-    return x + (a - (x % a or a))
+    return x + a - (x % a or a)
 
 pe = pefile.PE(sys.argv[1])
 pe.show_warnings()
