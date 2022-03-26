@@ -8,10 +8,10 @@ pe = pefile.PE(sys.argv[1])
 pe.show_warnings()
 
 if pe.FILE_HEADER.Machine == pefile.MACHINE_TYPE['IMAGE_FILE_MACHINE_ARM64']:
-    if (pe.OPTIONAL_HEADER.DllCharacteristics & pefile.DLL_CHARACTERISTICS['IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE']) == 0 or not pe.has_relocs():
+    if not pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE or not pe.has_relocs():
         print("ARM64 image without dynamic base flag or relocations not allowed")
 
-if pe.OPTIONAL_HEADER.DllCharacteristics & pefile.DLL_CHARACTERISTICS['IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE'] and not pe.has_relocs():
+if pe.OPTIONAL_HEADER.IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE and not pe.has_relocs():
     print("dynamic base flag set but no relocations, will be ignored")
 
 
