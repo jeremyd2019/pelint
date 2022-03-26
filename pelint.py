@@ -16,11 +16,13 @@ if pe.OPTIONAL_HEADER.DllCharacteristics & pefile.DLL_CHARACTERISTICS['IMAGE_DLL
     print("dynamic base flag set but no relocations, will be ignored")
 
 
+section_alignment = pe.OPTIONAL_HEADER.SectionAlignment if pe.OPTIONAL_HEADER.SectionAlignment >= 0x1000 else pe.OPTIONAL_HEADER.FileAlignment
+
 expected_next_va = None
 for section in pe.sections:
     if expected_next_va is not None and section.VirtualAddress != expected_next_va:
         print("Non-contiguous section %s, virtual address = 0x%08X, size = 0x%08X, expected virtual address = 0x%08X" % (section.Name, section.VirtualAddress, section.Misc_VirtualSize, expected_next_va))
-    expected_next_va = align(section.VirtualAddress + section.Misc_VirtualSize, pe.OPTIONAL_HEADER.SectionAlignment if pe.OPTIONAL_HEADER.SectionAlignment >= 0x1000 else pe.OPTIONAL_HEADER.FileAlignment)
+    expected_next_va = align(section.VirtualAddress + section.Misc_VirtualSize, section_alignment)
 
 
 if pe.has_relocs():
