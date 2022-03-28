@@ -31,3 +31,9 @@ if pe.has_relocs():
             print("Out of order IMAGE_BASE_RELOCATION found, 0x%08X < 0x%08X" % (base_reloc.struct.VirtualAddress, last_va))
         last_va = base_reloc.struct.VirtualAddress
 
+        last_entry_rva = 0
+        for entry in base_reloc.entries:
+            if entry.type != pefile.RELOCATION_TYPE['IMAGE_REL_BASED_ABSOLUTE']:
+                if entry.rva < last_entry_rva:
+                    print("Out of order relocation entry found, 0x%08X < 0x%08X" % (entry.rva, last_entry_rva))
+                last_entry_rva = entry.rva
