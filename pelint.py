@@ -33,7 +33,7 @@ if pe.has_relocs():
 
         last_entry_rva = 0
         for entry in base_reloc.entries:
-            if entry.type != pefile.RELOCATION_TYPE['IMAGE_REL_BASED_ABSOLUTE']:
+            if entry.struct.Data != 0: # ignore padding
                 if entry.rva < last_entry_rva:
                     print("Out of order relocation entry found, 0x%08X < 0x%08X" % (entry.rva, last_entry_rva))
                 last_entry_rva = entry.rva
